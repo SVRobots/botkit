@@ -59,20 +59,107 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
+var yesImoji = [
+    'simple_smile',
+    'heart_eyes',
+    'thumbsup',
+    'heart',
+    'grinning',
+    'smiley',
+    'smile',
+    'joy',
+    'sweat_smile',
+    'smirk',
+    'wink',
+    'nerd_face',
+    'clap',
+    'ok_hand',
+    'cool',
+    'troll'
+    
+];
+
+var noImoji = [
+    'joy',
+    'sweat_smile',
+    'laughing',
+    'unamused',
+    'face_with_rolling_eyes',
+    'flushed',
+    'disappointed',
+    'worried',
+    'angry',
+    'rage',
+    'slightly_frowning_face',
+    'white_frowning_face',
+    'persevere',
+    'confounded',
+    'open_mouth',
+    'scream',
+    'fearful',
+    'cold_sweat',
+    'cry',
+    'disappointed_relieved',
+    'sob',
+    'thumbsdown',
+    'rage2',
+    'troll'
+];
+
+var silentImoji = [
+    'confused',
+    'grimacing',
+    'expressionless',
+    'thinking_face',
+    'zipper_mouth_face',
+    'neutral_face',
+    'no_mouth'
+];
 
 controller.hears(['(.*)'],'ambient',function(bot, message) {
 
         if(message.match[1].slice(-1) === "?")
         {
-            if(Math.floor(Math.random() * (2 - 0) + 0) === 1)
+            if(Math.floor(Math.random() * (101 - 0) + 0) != 42)
             {
-                bot.reply(message, "YES!" );
+                if(Math.floor(Math.random() * (2 - 0) + 0) === 1)
+                {
+                    bot.api.reactions.add({
+                        timestamp: message.ts,
+                        channel: message.channel,
+                        name: yesImoji[Math.floor(Math.random() * (yesImoji.length - 0) + 0)],
+                    },function(err, res) {
+                        if (err) {
+                            bot.botkit.log('Failed to add emoji reaction :(',err);
+                        }
+                    });
+                    bot.reply(message, "YES!" );
+                }
+                else
+                {
+                bot.api.reactions.add({
+                        timestamp: message.ts,
+                        channel: message.channel,
+                        name: noImoji[Math.floor(Math.random() * (noImoji.length - 0) + 0)],
+                    },function(err, res) {
+                        if (err) {
+                            bot.botkit.log('Failed to add emoji reaction :(',err);
+                        }
+                    });
+                    bot.reply(message, "NO!" );
+                }
             }
             else
             {
-                /*message.username="broken";*/
-                bot.reply(message, JSON.stringify(message) );
-                /*bot.say(message);*/
+                bot.api.reactions.add({
+                    timestamp: message.ts,
+                    channel: message.channel,
+                    name: silentImoji[Math.floor(Math.random() * (silentImoji.length - 0) + 0)],
+                },function(err, res) {
+                    if (err) {
+                        bot.botkit.log('Failed to add emoji reaction :(',err);
+                    }
+                });
             }
         }
 });
